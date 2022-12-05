@@ -31,7 +31,7 @@ class CNN:
 
         input_mfcc = tf.keras.Input(shape=input_shape)
         ## CONV1D: 4 filters 8, stride of 1, padding 'SAME'
-        Z1 = tfl.Conv1D(filters = 4, kernel_size = 8, strides = 2, padding='same', kernel_initializer = 'he_normal', kernel_regularizer = 'L1')(input_mfcc)
+        Z1 = tfl.Conv1D(filters = 128, kernel_size = 512, strides = 2, padding='same', kernel_initializer = 'he_normal', kernel_regularizer = 'L1')(input_mfcc)
         ## RELU
         A1 = tfl.ReLU()(Z1)
         ## MAXPOOL: window 8, stride 4, padding 'SAME'

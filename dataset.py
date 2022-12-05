@@ -103,7 +103,7 @@ def getMFCCDatasetRAVDESS(train_size = 0.6, valid_size = 0.2, test_size = 0.2):
         numpy_datas.extend(datalist)
 
     for i in range(len(numpy_datas)):
-        numpy_datas[i][0] = np.transpose(np.resize(numpy_datas[i][0], (19,512)))
+        numpy_datas[i][0] = np.transpose(np.resize(numpy_datas[i][0], (19,1500)))
 
         
     collection = {}
