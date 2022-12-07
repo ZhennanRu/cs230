@@ -8,7 +8,7 @@ from keras.models import Sequential
 from keras.optimizers import Adam
 import numpy as np
 
-class CNN1D(DNN):
+class CNN1D():
     def __init__(self, model: Sequential, trained: bool = False) -> None:
         super(CNN1D, self).__init__(model, trained)
 
