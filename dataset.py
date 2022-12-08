@@ -64,7 +64,7 @@ def process_dataset(train_data, valid_data, test_data):
 
 
 # get Japanese dataset
-def getMFCCDataset(train_size = 0.6, valid_size = 0.2, test_size = 0.2, cut = False, max_len = 1841):
+def getMFCCDataset(train_size = 0.6, valid_size = 0.2, test_size = 0.2, cut = False, max_wid = 19, max_len = 1841):
 
     MFCCs_DATA = "MFCCsData2" if cut == False else "MFCCsData"
     numpy_datas = []
@@ -77,7 +77,7 @@ def getMFCCDataset(train_size = 0.6, valid_size = 0.2, test_size = 0.2, cut = Fa
         numpy_datas.extend(datalist)
 
     for i in range(len(numpy_datas)):
-        numpy_datas[i][0] = np.pad(numpy_datas[i][0], ((0, 0),(0, max_len-numpy_datas[i][0].shape[1])), 'constant', constant_values=(0,0))
+        numpy_datas[i][0] = np.pad(numpy_datas[i][0], ((0, max_wid - numpy_datas[i][0].shape[0]),(0, max_len-numpy_datas[i][0].shape[1])), 'constant', constant_values=(0,0))
         
     
     angry = []
@@ -245,7 +245,7 @@ def get_Eight_emotions(train_size, valid_size, test_size, numpy_datas, emotion_t
     return collection
 
 # get RAVDESS dataset
-def getMFCCDatasetRAVDESS(train_size = 0.6, valid_size = 0.2, test_size = 0.2, cut = False, emotion_number = 3, max_len = 512):
+def getMFCCDatasetRAVDESS(train_size = 0.6, valid_size = 0.2, test_size = 0.2, cut = False, emotion_number = 3, max_wid = 19, max_len = 512):
 
     MFCCs_DATA = "MFCCsData_RAVDESS2" if cut == False else "MFCCsData_RAVDESS"
     numpy_datas = []
@@ -258,7 +258,7 @@ def getMFCCDatasetRAVDESS(train_size = 0.6, valid_size = 0.2, test_size = 0.2, c
         numpy_datas.extend(datalist)
 
     for i in range(len(numpy_datas)):
-        numpy_datas[i][0] = np.pad(numpy_datas[i][0], ((0, 0),(0, max_len-numpy_datas[i][0].shape[1])), 'constant', constant_values=(0,0))
+        numpy_datas[i][0] = np.pad(numpy_datas[i][0], ((0, max_wid - numpy_datas[i][0].shape[0]),(0, max_len-numpy_datas[i][0].shape[1])), 'constant', constant_values=(0,0))
 
         
 
