@@ -21,10 +21,52 @@ def data2vector(data):
     Y = np.array(Y)
     return X,Y
 
-# get Japanese dataset
-def getMFCCDataset(train_size = 0.6, valid_size = 0.2, test_size = 0.2):
+def process_dataset(train_data, valid_data, test_data):
+    collection = {}
+    
+    random.shuffle(train_data)
+    random.shuffle(valid_data)
+    random.shuffle(test_data)
 
-    MFCCs_DATA = "MFCCsData"
+    X_train, Y_train = data2vector(train_data)
+    X_valid, Y_valid = data2vector(valid_data)
+    X_test, Y_test = data2vector(test_data)
+
+    collection['X_train'] = X_train
+    collection['Y_train'] = Y_train
+    collection['X_valid'] = X_valid
+    collection['Y_valid'] = Y_valid
+    collection['X_test'] = X_test
+    collection['Y_test'] = Y_test
+    
+    X_train_miu = np.average(X_train, axis=0)
+    X_train_std = np.std(X_train, axis=0)
+    X_valid_miu = np.average(X_valid, axis=0)
+    X_valid_std = np.std(X_valid, axis=0)
+    X_test_miu = np.average(X_test, axis=0)
+    X_test_std = np.std(X_test, axis=0)
+    
+    X_train_norm = (X_train - X_train_miu)/X_train_std
+    X_valid_norm = (X_valid - X_valid_miu)/X_valid_std
+    X_test_norm = (X_test - X_test_miu)/X_test_std
+
+    # replace Nan values to 0
+    # all Nan values come from std = 0
+    X_train_norm[np.isnan(X_train_norm)] = 0
+    X_valid_norm[np.isnan(X_valid_norm)] = 0
+    X_test_norm[np.isnan(X_test_norm)] = 0
+
+    collection['X_train_norm'] = X_train_norm
+    collection['X_valid_norm'] = X_valid_norm
+    collection['X_test_norm'] = X_test_norm
+
+    return collection
+
+
+# get Japanese dataset
+def getMFCCDataset(train_size = 0.6, valid_size = 0.2, test_size = 0.2, cut = False, max_len = 1841):
+
+    MFCCs_DATA = "MFCCsData2" if cut == False else "MFCCsData"
     numpy_datas = []
 
     dirlist = os.listdir(MFCCs_DATA)
@@ -35,8 +77,9 @@ def getMFCCDataset(train_size = 0.6, valid_size = 0.2, test_size = 0.2):
         numpy_datas.extend(datalist)
 
     for i in range(len(numpy_datas)):
-        numpy_datas[i][0] = np.transpose(np.resize(numpy_datas[i][0], (19,400)))
-    collection = {}
+        numpy_datas[i][0] = np.pad(numpy_datas[i][0], ((0, 0),(0, max_len-numpy_datas[i][0].shape[1])), 'constant', constant_values=(0,0))
+        
+    
     angry = []
     happy = []
     normal = []
@@ -60,34 +103,16 @@ def getMFCCDataset(train_size = 0.6, valid_size = 0.2, test_size = 0.2):
     train_data = angry[:int(len(angry)*train_size)] + happy[:int(len(happy)*train_size)] + normal[:int(len(normal)*train_size)]
     valid_data = angry[int(len(angry)*train_size):int(len(angry)*(train_size+valid_size))] + happy[int(len(happy)*train_size):int(len(happy)*(train_size+valid_size))] + normal[int(len(normal)*train_size):int(len(normal)*(train_size+valid_size))]
     test_data = angry[int(len(angry)*(train_size+valid_size)):] + happy[int(len(happy)*(train_size+valid_size)):] + normal[int(len(normal)*(train_size+valid_size)):]
-    random.shuffle(train_data)
-    random.shuffle(valid_data)
-    random.shuffle(test_data)
-
-    X_train, Y_train = data2vector(train_data)
-    X_valid, Y_valid = data2vector(valid_data)
-    X_test, Y_test = data2vector(test_data)
-
-    collection['X_train'] = X_train
-    collection['Y_train'] = Y_train
-    collection['X_valid'] = X_valid
-    collection['Y_valid'] = Y_valid
-    collection['X_test'] = X_test
-    collection['Y_test'] = Y_test
     
-    X_train_miu = np.average(X_train, axis=0)
-    X_train_std = np.std(X_train, axis=0)
+    collection = process_dataset(train_data, valid_data, test_data)
+    
 
-    X_train_norm = (X_train - X_train_miu)/X_train_std
-    X_valid_norm = (X_valid - X_train_miu)/X_train_std
-    X_test_norm = (X_test - X_train_miu)/X_train_std
+    # collection['X_train_norm'] = X_train
+    # collection['X_valid_norm'] = X_valid
+    # collection['X_test_norm'] = X_test
 
-    collection['X_train_norm'] = X_train_norm
-    collection['X_valid_norm'] = X_valid_norm
-    collection['X_test_norm'] = X_test_norm
-
-    # further add normalization
     return collection
+
 
 # get three types emotions angry, happy, nomal from English dataset
 def get_Three_emotions(train_size, valid_size, test_size, numpy_datas, emotion_type_idx):
@@ -99,13 +124,13 @@ def get_Three_emotions(train_size, valid_size, test_size, numpy_datas, emotion_t
     for i in range(len(numpy_datas)):
         file_name = numpy_datas[i][1]
         if file_name[emotion_type_idx] == '5':
-            numpy_datas[i][1] = np.array([0,0,1])
+            numpy_datas[i][1] = np.array([1,0,0])
             angry.append(numpy_datas[i])
         elif file_name[emotion_type_idx] == '3':
             numpy_datas[i][1] = np.array([0,1,0])
             happy.append(numpy_datas[i])
         elif file_name[emotion_type_idx] == '1':
-            numpy_datas[i][1] = np.array([1,0,0])
+            numpy_datas[i][1] = np.array([0,0,1])
             normal.append(numpy_datas[i])
     random.shuffle(angry)
     random.shuffle(happy)
@@ -129,31 +154,7 @@ def get_Three_emotions(train_size, valid_size, test_size, numpy_datas, emotion_t
          + normal[int(len(normal)*(train_size+valid_size)):]
     )
 
-    random.shuffle(train_data)
-    random.shuffle(valid_data)
-    random.shuffle(test_data)
-
-    X_train, Y_train = data2vector(train_data)
-    X_valid, Y_valid = data2vector(valid_data)
-    X_test, Y_test = data2vector(test_data)
-
-    collection['X_train'] = X_train
-    collection['Y_train'] = Y_train
-    collection['X_valid'] = X_valid
-    collection['Y_valid'] = Y_valid
-    collection['X_test'] = X_test
-    collection['Y_test'] = Y_test
-    
-    X_train_miu = np.average(X_train, axis=0)
-    X_train_std = np.std(X_train, axis=0)
-
-    X_train_norm = (X_train - X_train_miu)/X_train_std
-    X_valid_norm = (X_valid - X_train_miu)/X_train_std
-    X_test_norm = (X_test - X_train_miu)/X_train_std
-
-    collection['X_train_norm'] = X_train_norm
-    collection['X_valid_norm'] = X_valid_norm
-    collection['X_test_norm'] = X_test_norm
+    collection = process_dataset(train_data, valid_data, test_data)
 
     return collection
 
@@ -238,38 +239,14 @@ def get_Eight_emotions(train_size, valid_size, test_size, numpy_datas, emotion_t
          + surprised[int(len(surprised)*(train_size+valid_size)):]
     )
 
-    random.shuffle(train_data)
-    random.shuffle(valid_data)
-    random.shuffle(test_data)
-
-    X_train, Y_train = data2vector(train_data)
-    X_valid, Y_valid = data2vector(valid_data)
-    X_test, Y_test = data2vector(test_data)
-
-    collection['X_train'] = X_train
-    collection['Y_train'] = Y_train
-    collection['X_valid'] = X_valid
-    collection['Y_valid'] = Y_valid
-    collection['X_test'] = X_test
-    collection['Y_test'] = Y_test
-    
-    X_train_miu = np.average(X_train, axis=0)
-    X_train_std = np.std(X_train, axis=0)
-
-    X_train_norm = (X_train - X_train_miu)/X_train_std
-    X_valid_norm = (X_valid - X_train_miu)/X_train_std
-    X_test_norm = (X_test - X_train_miu)/X_train_std
-
-    collection['X_train_norm'] = X_train_norm
-    collection['X_valid_norm'] = X_valid_norm
-    collection['X_test_norm'] = X_test_norm
+    collection = process_dataset(train_data, valid_data, test_data)
 
     return collection
 
 # get RAVDESS dataset
-def getMFCCDatasetRAVDESS(train_size = 0.6, valid_size = 0.2, test_size = 0.2, cut = False, emotion_number = 3):
+def getMFCCDatasetRAVDESS(train_size = 0.6, valid_size = 0.2, test_size = 0.2, cut = False, emotion_number = 3, max_len = 512):
 
-    MFCCs_DATA = "MFCCsData_RAVDESS2" if cut == False else "MFCCsData_RAVDESS2"
+    MFCCs_DATA = "MFCCsData_RAVDESS2" if cut == False else "MFCCsData_RAVDESS"
     numpy_datas = []
 
     dirlist = os.listdir(MFCCs_DATA)
@@ -280,7 +257,7 @@ def getMFCCDatasetRAVDESS(train_size = 0.6, valid_size = 0.2, test_size = 0.2, c
         numpy_datas.extend(datalist)
 
     for i in range(len(numpy_datas)):
-        numpy_datas[i][0] = np.transpose(np.resize(numpy_datas[i][0], (19,512)))
+        numpy_datas[i][0] = np.pad(numpy_datas[i][0], ((0, 0),(0, max_len-numpy_datas[i][0].shape[1])), 'constant', constant_values=(0,0))
 
         
 
