@@ -161,6 +161,7 @@ def get_Three_emotions(train_size, valid_size, test_size, numpy_datas, emotion_t
 # get all eight types emotions from English dataset
 def get_Eight_emotions(train_size, valid_size, test_size, numpy_datas, emotion_type_idx):
     collection = {}
+    # change file name to correct label
     angry = []
     happy = []
     normal = []
@@ -172,28 +173,28 @@ def get_Eight_emotions(train_size, valid_size, test_size, numpy_datas, emotion_t
 
     for i in range(len(numpy_datas)):
         file_name = numpy_datas[i][1]
-        if file_name[emotion_type_idx] == '5':
+        if file_name[34] == '5':
             numpy_datas[i][1] = np.array([0,0,0,0,1,0,0,0])
             angry.append(numpy_datas[i])
-        elif file_name[emotion_type_idx] == '3':
+        elif file_name[34] == '3':
             numpy_datas[i][1] = np.array([0,0,1,0,0,0,0,0])
             happy.append(numpy_datas[i])
-        elif file_name[emotion_type_idx] == '1':
+        elif file_name[34] == '1':
             numpy_datas[i][1] = np.array([1,0,0,0,0,0,0,0])
             normal.append(numpy_datas[i])
-        elif file_name[emotion_type_idx] == '2':
+        elif file_name[34] == '2':
             numpy_datas[i][1] = np.array([0,1,0,0,0,0,0,0])
             calm.append(numpy_datas[i])
-        elif file_name[emotion_type_idx] == '4':
+        elif file_name[34] == '4':
             numpy_datas[i][1] = np.array([0,0,0,1,0,0,0,0])
             sad.append(numpy_datas[i])
-        elif file_name[emotion_type_idx] == '6':
+        elif file_name[34] == '6':
             numpy_datas[i][1] = np.array([0,0,0,0,0,1,0,0])
             fearful.append(numpy_datas[i])
-        elif file_name[emotion_type_idx] == '7':
+        elif file_name[34] == '7':
             numpy_datas[i][1] = np.array([0,0,0,0,0,0,1,0])
             disgust.append(numpy_datas[i])
-        elif file_name[emotion_type_idx] == '8':
+        elif file_name[34] == '8':
             numpy_datas[i][1] = np.array([0,0,0,0,0,0,0,1])
             surprised.append(numpy_datas[i])
 
@@ -207,36 +208,36 @@ def get_Eight_emotions(train_size, valid_size, test_size, numpy_datas, emotion_t
     random.shuffle(surprised)
 
     train_data = (
-        angry[:int(len(angry)*train_size)]
-         + happy[:int(len(happy)*train_size)] 
-         + normal[:int(len(normal)*train_size)]
-         + calm[:int(len(calm)*train_size)]
-         + sad[:int(len(sad)*train_size)]
-         + fearful[:int(len(fearful)*train_size)]
-         + disgust[:int(len(disgust)*train_size)]
-         + surprised[:int(len(surprised)*train_size)]
+        angry[:int(len(angry)*train_size)] + 
+        happy[:int(len(happy)*train_size)] + 
+        normal[:int(len(normal)*train_size)] + 
+        calm[:int(len(calm)*train_size)] + 
+        sad[:int(len(sad)*train_size)] + 
+        fearful[:int(len(fearful)*train_size)] + 
+        disgust[:int(len(disgust)*train_size)] + 
+        surprised[:int(len(surprised)*train_size)]
     )
 
     valid_data = (
-        angry[int(len(angry)*train_size):int(len(angry)*(train_size+valid_size))]
-         + happy[int(len(happy)*train_size):int(len(happy)*(train_size+valid_size))]
-         + normal[int(len(normal)*train_size):int(len(normal)*(train_size+valid_size))]
-         + sad[int(len(sad)*train_size):int(len(sad)*(train_size+valid_size))]
-         + calm[int(len(calm)*train_size):int(len(calm)*(train_size+valid_size))]
-         + fearful[int(len(fearful)*train_size):int(len(fearful)*(train_size+valid_size))] 
-         + disgust[int(len(disgust)*train_size):int(len(disgust)*(train_size+valid_size))]
-         + surprised[int(len(surprised)*train_size):int(len(surprised)*(train_size+valid_size))]
+        angry[int(len(angry)*train_size):int(len(angry)*(train_size+valid_size))] + 
+        happy[int(len(happy)*train_size):int(len(happy)*(train_size+valid_size))] + 
+        normal[int(len(normal)*train_size):int(len(normal)*(train_size+valid_size))] + 
+        sad[int(len(sad)*train_size):int(len(sad)*(train_size+valid_size))] + 
+        calm[int(len(calm)*train_size):int(len(calm)*(train_size+valid_size))] + 
+        fearful[int(len(fearful)*train_size):int(len(fearful)*(train_size+valid_size))] + 
+        disgust[int(len(disgust)*train_size):int(len(disgust)*(train_size+valid_size))] + 
+        surprised[int(len(surprised)*train_size):int(len(surprised)*(train_size+valid_size))]
     )
 
     test_data = (
-        angry[int(len(angry)*(train_size+valid_size)):]
-         + happy[int(len(happy)*(train_size+valid_size)):] 
-         + normal[int(len(normal)*(train_size+valid_size)):]
-         + calm[int(len(calm)*(train_size+valid_size)):]
-         + sad[int(len(sad)*(train_size+valid_size)):]
-         + fearful[int(len(fearful)*(train_size+valid_size)):] 
-         + disgust[int(len(disgust)*(train_size+valid_size)):] 
-         + surprised[int(len(surprised)*(train_size+valid_size)):]
+        angry[int(len(angry)*(train_size+valid_size)):] + 
+        happy[int(len(happy)*(train_size+valid_size)):] + 
+        normal[int(len(normal)*(train_size+valid_size)):] +  
+        calm[int(len(calm)*(train_size+valid_size)):] + 
+        sad[int(len(sad)*(train_size+valid_size)):] + 
+        fearful[int(len(fearful)*(train_size+valid_size)):] + 
+        disgust[int(len(disgust)*(train_size+valid_size)):] + 
+        surprised[int(len(surprised)*(train_size+valid_size)):]
     )
 
     collection = process_dataset(train_data, valid_data, test_data)
