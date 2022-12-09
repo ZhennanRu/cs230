@@ -77,7 +77,7 @@ def getMFCCDataset(train_size = 0.6, valid_size = 0.2, test_size = 0.2, cut = Fa
         numpy_datas.extend(datalist)
 
     for i in range(len(numpy_datas)):
-        numpy_datas[i][0] = np.pad(numpy_datas[i][0], ((0, max_wid - numpy_datas[i][0].shape[0]),(0, max_len-numpy_datas[i][0].shape[1])), 'constant', constant_values=(0,0))
+        numpy_datas[i][0] = np.transpose(np.pad(numpy_datas[i][0], ((0, max_wid - numpy_datas[i][0].shape[0]),(0, max_len-numpy_datas[i][0].shape[1])), 'constant', constant_values=(0,0)))
         
     
     angry = []
@@ -258,7 +258,7 @@ def getMFCCDatasetRAVDESS(train_size = 0.6, valid_size = 0.2, test_size = 0.2, c
         numpy_datas.extend(datalist)
 
     for i in range(len(numpy_datas)):
-        numpy_datas[i][0] = np.pad(numpy_datas[i][0], ((0, max_wid - numpy_datas[i][0].shape[0]),(0, max_len-numpy_datas[i][0].shape[1])), 'constant', constant_values=(0,0))
+        numpy_datas[i][0] = np.transpose(np.pad(numpy_datas[i][0], ((0, max_wid - numpy_datas[i][0].shape[0]),(0, max_len-numpy_datas[i][0].shape[1])), 'constant', constant_values=(0,0)))
 
         
 
