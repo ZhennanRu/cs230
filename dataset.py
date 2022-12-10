@@ -21,6 +21,11 @@ def data2vector(data):
     Y = np.array(Y)
     return X,Y
 
+# transfer NaN value to 0
+# NaN value is caused in normalization due to lots of 0 padded and making part of std = 0
+# train_data: list of train X and train Y
+# valid_data: list of valid X and valid Y
+# test_data: list of test X and test Y
 def process_dataset(train_data, valid_data, test_data):
     collection = {}
     
@@ -64,6 +69,9 @@ def process_dataset(train_data, valid_data, test_data):
 
 
 # get Japanese dataset
+# train_size, valid_size, test_size: size of different data sets
+# cut: bool of whether the audio is cut head and tail
+# max_wid, max_len: new shape of audio spectrum matrix, padding with 0
 def getMFCCDataset(train_size = 0.6, valid_size = 0.2, test_size = 0.2, cut = False, max_wid = 19, max_len = 1841):
 
     MFCCs_DATA = "MFCCsData2" if cut == False else "MFCCsData"
@@ -115,6 +123,9 @@ def getMFCCDataset(train_size = 0.6, valid_size = 0.2, test_size = 0.2, cut = Fa
 
 
 # get three types emotions angry, happy, nomal from English dataset
+# train_size, valid_size, test_size: size of different data sets
+# numpy_datas: all input audio matrix
+# emotion_type_idx: index showing different emotion type
 def get_Three_emotions(train_size, valid_size, test_size, numpy_datas, emotion_type_idx):
     collection = {}
     angry = []
@@ -159,6 +170,9 @@ def get_Three_emotions(train_size, valid_size, test_size, numpy_datas, emotion_t
     return collection
 
 # get all eight types emotions from English dataset
+# train_size, valid_size, test_size: size of different data sets
+# numpy_datas: all input audio matrix
+# emotion_type_idx: index showing different emotion type
 def get_Eight_emotions(train_size, valid_size, test_size, numpy_datas, emotion_type_idx):
     collection = {}
     # change file name to correct label
@@ -244,7 +258,10 @@ def get_Eight_emotions(train_size, valid_size, test_size, numpy_datas, emotion_t
 
     return collection
 
-# get RAVDESS dataset
+# get RAVDESS dataset (English dataset)
+# train_size, valid_size, test_size: size of different data sets
+# cut: bool of whether the audio is cut head and tail
+# max_wid, max_len: new shape of audio spectrum matrix, padding with 0
 def getMFCCDatasetRAVDESS(train_size = 0.6, valid_size = 0.2, test_size = 0.2, cut = False, emotion_number = 3, max_wid = 19, max_len = 512):
 
     MFCCs_DATA = "MFCCsData_RAVDESS2" if cut == False else "MFCCsData_RAVDESS"
